@@ -1,0 +1,248 @@
+---
+title: "DSC 520 Final Project"
+author: "Amy Nestingen"
+date: "2/17/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+
+
+#imports
+library(stats)
+library(ggplot2)
+
+library(readxl)
+library(tidyverse)
+
+
+
+#Set Working Directory and Check
+setwd('C:/Users/nesti/Documents/R/DSC 520/DSC 520 Project')
+getwd()
+
+
+
+#import data
+D_Edu = read_excel ("DC_Education.xlsx")
+head(D_Edu)
+D_Pop = read_excel ("DC_PopulationEstimates.xlsx")
+D_Pov = read_excel ("DC_PovertyEstimates.xlsx")
+D_Unp = read_excel ("DC_Unemployment.xlsx")
+
+#join data sets together
+D_Edu_Pop <- inner_join(D_Edu,D_Pop, by = "FIPS")
+str(D_Edu_Pop)
+D_Edu_Pop_Pov <- inner_join(D_Edu_Pop,D_Pov, by = "FIPS")
+D_All <- inner_join(D_Edu_Pop_Pov,D_Unp, by = "FIPS")
+
+#Check joined table
+str(D_All)
+head(D_All)
+nrow(D_All)
+ncol(D_All)
+
+#separate County, Country, and State data
+
+D_County <- subset(D_All, Type == 'County') 
+head(D_County)
+
+D_State <- subset(D_All, Type == 'State') 
+head(D_State)
+
+D_USA <- subset(D_All, Type == 'USA') 
+head(D_USA)
+
+#Rename variables
+
+D_County <- D_County %>%
+  rename(
+    Est_Pop_18 = POP_ESTIMATE_2018,
+    Rural_Urban_13 = "Rural-urban_Continuum Code_2013",
+    Urban_2013 = "2013 Urban Influence Code",
+    UR_18 = Unemployment_rate_2018,
+    Per_Less_HS_14_18 = "Percent of adults with less than a high school diploma, 2014-18",
+    Per_HS_14_18 = "Percent of adults with a high school diploma only, 2014-18",
+    Per_Some_Col_14_18 = "Percent of adults completing some college or associate's degree, 2014-18",
+    Per_Col_14_18 = "Percent of adults with a bachelor's degree or higher, 2014-18",
+    Per_Pov_18 = "PCTPOVALL_2018",
+  )
+
+#Check Data Types
+str(D_County)
+
+
+typeof(D_County$Rural_Urban_13)
+as.factor(D_County$Rural_Urban_13)
+as.factor(D_County$Urban_2013)
+```
+
+## Final Summary
+
+My problem statement is "Predict poverty rate in a US County". By understanding what factors contribute most to unemployment rate, there could be more focused help on providing assitance to struggling counties.  
+
+I have combined 4 data sets together to create a master file. There is a data set for poverty, unemployment, population, and education. In my final model, I used data from poverty, unemployment, and education. 
+
+I started by creating scatterplots with poverty rate in 2018 as the dependent variable versus each of the main independent variables. The independent variables I was focused on included Population Estimate in 2018, Rural Urban Continuum Code 2013, 2013 Urban Influence Code, Percent of adults with less than a high school diploma 2014-18, Percent of adults with a high school diploma only, 2014-18, Percent of adults completing some college or associate's degree, 2014-18, and Percent in Unemployment 2018. From this investigation, I found that population had little to do with unemployment rate in 2018.
+
+The scatter plots below gave me a visual representation of how the variables correlate to each other. 
+
+``` {r}
+#scatter plots
+
+#Pop vs. Unemployment rate
+
+ggplot(D_County, aes(x=Per_Less_HS_14_18, y=Est_Pop_18)) + geom_point()
+
+ggplot(D_County, aes(x=UR_18, y=Est_Pop_18)) + geom_point()
+
+ggplot(D_County, aes(x=Per_Pov_18, y=Est_Pop_18)) + geom_point()
+
+ggplot(D_County, aes(x=Per_Pov_18, y=Per_Less_HS_14_18)) + geom_point()
+
+#Rural Urban Color
+
+ggplot(D_County, aes(x=Per_Pov_18, y=UR_18,color = Rural_Urban_13 )) + geom_point(alpha = .2)
+
+ggplot(D_County, aes(x=Per_Pov_18, y=Per_Less_HS_14_18,color = Rural_Urban_13 )) + geom_point(alpha = .2)
+
+ggplot(D_County, aes(x=UR_18, y=Per_Less_HS_14_18,color = Rural_Urban_13 )) + geom_point(alpha = .2)
+
+
+#Urban Color
+ggplot(D_County, aes(x=Per_Pov_18, y=UR_18,color = Urban_2013 )) + geom_point(alpha = .2)
+
+ggplot(D_County, aes(x=Per_Pov_18, y=Per_Less_HS_14_18,color = Urban_2013 )) + geom_point(alpha = .2)
+
+ggplot(D_County, aes(x=UR_18, y=Per_Less_HS_14_18,color = Urban_2013 )) + geom_point(alpha = .2)
+```
+
+I looked at many versions of a linear model based on the data. The best model I found before manipulation included Unemployment rate, Percent of Adults with less than a High School Diploma and Percent of Adults with a High School diploma. Below shows the manual method I used to find this model. 
+
+``` {r}
+#Models and Diagnostics
+mod1 <- lm(Per_Pov_18 ~ UR_18 + Per_Less_HS_14_18 + Per_HS_14_18 + Per_Some_Col_14_18 + Per_Col_14_18, data= D_County)
+summary(mod1) # show results
+layout(matrix(c(1,2,3,4),2,2)) # optional 4 graphs/page
+plot(mod1)
+
+
+mod2 <- lm(Per_Pov_18 ~ UR_18 + Per_Less_HS_14_18 + Per_HS_14_18 + Per_Some_Col_14_18, data= D_County)
+summary(mod2) # show results
+
+mod3 <- lm(Per_Pov_18 ~ UR_18 + Per_Less_HS_14_18 + Per_HS_14_18, data= D_County)
+summary(mod3) # show results
+
+
+```
+
+After looking at the QQ plot, I though it would be a good idea to tranform the mod_3 into a log model. This model fit a lot better than before the transformation. 
+
+``` {r}
+#log mod 3
+log_mod3 <- lm(log(Per_Pov_18) ~ log(UR_18) + log(Per_Less_HS_14_18) + log(Per_HS_14_18), data= D_County)
+summary(log_mod3) # show results
+plot(log_mod3)
+plot(mod3)
+
+```
+
+I also wanted to try a step function to automatically look for the best model. This method selected Unemployment rate, percentage of people with less than a high school diploma, percentage of people with a high school diploma, percentage of people with a college degree, rural urban code, and the urban code. 
+
+``` {r}
+
+#Modeling 
+
+library(MASS)
+
+fit <- lm(Per_Pov_18 ~ UR_18 + Per_Less_HS_14_18 + Per_HS_14_18 + Per_Some_Col_14_18 + 
+            Per_Col_14_18 + Est_Pop_18 + Rural_Urban_13 + Urban_2013,data= D_County)
+step <- stepAIC(fit, direction="both")
+step$anova # display results
+
+fit1 <- lm(Per_Pov_18 ~ UR_18 + Per_Less_HS_14_18 + Per_HS_14_18 + Per_Col_14_18 + 
+  Rural_Urban_13 + Urban_2013, data = D_County)
+
+summary(fit1)
+plot(fit1)
+vcov(fit)
+```
+
+I found the outliers below and decide to remove them. 
+
+``` {r}
+
+#Remove 2 outliers
+
+D_County [2674, ]
+#Loving County, TX
+
+#Llano Country, TX
+D_County [2673, ]
+
+D1_County <- D_County [-c(2674),]
+
+D1_County <- D1_County [-c(2673),]
+
+```
+
+I then ran the mod 3, log mod 3, the step model (fit1) with the data set without the outliers. 
+
+``` {r}
+
+mod3_1 <- lm(Per_Pov_18 ~ UR_18 + Per_Less_HS_14_18 + Per_HS_14_18, data= D1_County)
+summary(mod3_1) # show results
+plot(mod3_1)
+
+#log mod 3
+log_mod3_1 <- lm(log(Per_Pov_18) ~ log(UR_18) + log(Per_Less_HS_14_18) + log(Per_HS_14_18), data= D1_County)
+summary(log_mod3_1) # show results
+plot(log_mod3_1)
+
+#Stepwise Fit with subset
+fit1_1 <- lm(Per_Pov_18 ~ UR_18 + Per_Less_HS_14_18 + Per_HS_14_18 + Per_Col_14_18 + 
+             Rural_Urban_13 + Urban_2013, data = D1_County)
+summary(fit1_1)
+plot(fit1_1)
+
+#Log Stepwise Fit with subset
+Log_fit1_1 <- lm(log(Per_Pov_18) ~ log(UR_18) + log(Per_Less_HS_14_18) + log(Per_HS_14_18) + log(Per_Col_14_18) + 
+               log(Rural_Urban_13) + log(Urban_2013), data = D1_County)
+summary(Log_fit1_1)
+plot(Log_fit1_1)
+
+#Skagway Municipality, AK
+D_County [91, ]
+
+D2_County <- D1_County [-c(91),]
+
+Log_fit1_2 <- lm(log(Per_Pov_18) ~ log(UR_18) + log(Per_Less_HS_14_18) + log(Per_HS_14_18) + log(Per_Col_14_18) + 
+                   log(Rural_Urban_13) + log(Urban_2013), data = D2_County)
+summary(Log_fit1_2)
+plot(Log_fit1_2)
+
+
+```
+
+
+# Interesting Insights
+The model that I thought was the best is log mod_3 with the subset with the outliers removed. All of the coefficients are significant and there aren't any unnessessary varibles included. The adjusted R squared value is .53. I thought it was interesting that the poverty rate could be predicted by the unemployment rate and education. There factors could be used to focus on decreasing the poverty rate. 
+ 
+ 
+```{r}
+ 
+log_mod3_1 <- lm(log(Per_Pov_18) ~ log(UR_18) + log(Per_Less_HS_14_18) + log(Per_HS_14_18), data= D1_County)
+summary(log_mod3_1) 
+```
+
+## Implications
+Because I removed outliers, this model would not do a good job predicting the counties that I removed. A deeper investigation would have to be done to determine the cause of these outliers. 
+
+## Limitations
+One limitation is that the time span was not taken into account. It is possible that the unemployment in years prior could predict the poverty rate more effectivly than the unemployment rate of the same year. 
+
+## Concluding Remarks
+The main drivers of poverty that I found is unemployment and education. There could be many other drivers that were not explored in this analysis. This is an important topic to continue to investigate. 
+

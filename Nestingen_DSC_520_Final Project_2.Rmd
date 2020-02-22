@@ -1,0 +1,114 @@
+---
+title: "DSC 520 Project Part 2"
+author: "Amy Nestingen"
+date: "2/12/2020"
+output: html_document
+---
+
+# R Code
+
+
+```{r}
+
+#imports
+library(stats)
+library(ggplot2)
+library(dbplyr)
+library(tidyverse)
+library(readxl)
+
+
+#import data
+D_Edu = read_excel ("DC_Education.xlsx")
+
+D_Pop = read_excel ("DC_PopulationEstimates.xlsx")
+D_Pov = read_excel ("DC_PovertyEstimates.xlsx")
+D_Unp = read_excel ("DC_Unemployment.xlsx")
+
+#join data sets together
+D_Edu_Pop <- inner_join(D_Edu,D_Pop, by = "FIPS")
+
+D_Edu_Pop_Pov <- inner_join(D_Edu_Pop,D_Pov, by = "FIPS")
+D_All <- inner_join(D_Edu_Pop_Pov,D_Unp, by = "FIPS")
+
+#Check joined table
+
+nrow(D_All)
+ncol(D_All)
+
+#separate County, Country, and State data
+
+D_County <- subset(D_All, Type == 'County') 
+
+
+D_State <- subset(D_All, Type == 'State') 
+
+
+D_USA <- subset(D_All, Type == 'USA') 
+
+```
+
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# A. 
+Data importing and cleaning steps are explained in the text and in the DataCamp exercises.(Tell me why you are doing the data cleaning activities that you perform). Follow a logical process.
+
+I am concatenating 4 files: Unemployment, Education, Population Estimates, and Poverty Estimates. The data is at a county level and the county ID matches throughout the 4 spreadsheets. Only Education and Unemployment has Puerto Rico data so I will remove this from the data. There are 3 AK counties that have spotty data so these will be thrown out too. I deleted the headers so that the column header is the first row in the table. I added a type column to the Education Sheet. This will say if the row is a country, state or county.I used the dplyr package in R to inner join the 4 tables. Thankfully, the column names are descriptive so I will be able to know what columns to use in the analysis. The total state data is intermixed with the county data. I need to remove this. 
+
+
+# B.
+With a clean dataset, show what the final data set looks like. However, do not print off a data frame with 200+ rows; show me the data in the most condensed form possible
+
+Below are the first 6 rows of the joined table. 
+
+```{r}
+head(D_All)
+```
+
+# C.
+What do you not know how to do right now that you need to learn to import and cleanup your dataset?
+
+I had to research how to join tables in R. Because my data sets shared a county key, this was not too difficult. 
+I also had to relearn how to subset the data so I had one data set for county, state and USA. 
+
+# D.
+Discuss how you plan to uncover new information in the data that is not self-evident.
+
+I was going to look at the data on a state level but because the data is by county, I will explore the data at this level. By looking across the 4 spreadsheets, there may be other predictor variables that have not been analyzed. 
+
+# E.
+What are different ways you could look at this data to answer the questions you want to answer?
+
+o	Scatter Plots will be helpful to compare two varibles. It will be crucial to make sure I am comparing data from the same year. Some data sets group year and some have a separate column for each year. This will be a watch out. 
+
+# F. 
+Do you plan to slice and dice the data in different ways, create new variables, or join separate data frames to create new summary information? Explain.
+
+I did join the 4 tables and then separated the data sets by County, Country, and State. This is so I can compare apples to apples.  A similar analysis that is done on the county data set could be applied to the state data set. 
+
+# G.
+How could you summarize your data to answer key questions?
+
+A key question would be Why do some counties have higher population rates than others? What drives unemployment rates? Some predictors might be population growth, education levels, or poverty rates. I would first want to compare if the unemployment rates are statistically different. A good summary would be an ANOVA output that shares if the predicting variables are significant. 
+
+# H.
+What types of plots and tables will help you to illustrate the findings to your questions? Ensure that all graph plots have axis titles, legend if necessary, scales are appropriate, appropriate geoms used, etc.).
+
+Scatter Plots for an initial exploration would be valuable. Histograms will also be useful to understand the variables better. I could make a scatter plot with the x axis education levels and the y axis unemployment rate. I could then break up the counties based on the county size scale (1-12) and color the dots a different color. This combination of 3 variables can rotated across the data set to visually understand the relationship. 
+
+# I. 
+What do you not know how to do right now that you need to learn to answer your questions?
+
+I will have to refresh my memory on all of the ways to manipulate graphs. I will also want to continue my research on what outputs are useful for a multiple regression. 
+
+# J.
+Do you plan on incorporating any machine learning techniques to answer your research questions? Explain.
+
+Right, now, I will not incorporate any machine learning. My data sets do not contain enough data for this. 
+
+
+
+
+

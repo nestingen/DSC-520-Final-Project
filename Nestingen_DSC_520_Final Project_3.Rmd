@@ -1,0 +1,49 @@
+---
+title: "DSC 520 Project Part 3"
+author: "Amy Nestingen"
+date: "2/15/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+I am interested on how Poverty, unemployment, population, and education are related. If one goes, up how are the other 3 effected.  How does this differ by state and region? I have narrowed this search to what factors effect population in a county. 
+
+I have combined 4 data sets together to create a master file. There is a data set for Poverty, unemployment, population, and education.
+
+```{r cars}
+summary(cars)
+```
+
+# A. Discuss how you plan to uncover new information in the data that is not self-evident.
+I will start with Census_2010 Population as the dependent variable. I will set up the code so that the population estimates from 2010 thorugh 2018 can also be used as dependent variables. I will choose independent variables from 2010 to predict the 2010 population for each county. I will look at scatter plots with each independent variable and match it up with the dependent variable. Then I will test several regression options to decide how to best predict the population of a county. 
+
+# B. What are different ways you could look at this data to answer the questions you want to answer?
+
+I think I will start looking at the data one year at a time. I should also look at the data year over year to understand if there are any variables that should be weighted heavier in later years. There are rural and urban tags that could also be applied. I can look at the more urban counties as one group and the rural counties as another group. 
+
+# C. Do you plan to slice and dice the data in different ways, create new variables, or join separate data frames to create new summary information? Explain.
+
+I have combined 4 dataframes to create one master talbe. The independent variable (population) was stored in one data frame and the other 3 dependent varialbes (poverty, education, and unemployment) were in 3 other data frames. The data frames came from the same website so they were relatively easy to join. They contained generallly the same counties with just a few exceptions. Counties that were not consitent across the data frames were removed.
+
+# D. How could you summarize your data to answer key questions?
+
+I will be heavily relying on ANOVA test to summarize the significance of the dependent variables. This will help me determine what variables to keep in or take out. It will also be important to check for correlation between the independent variables. I will use a correlation matrix to observe this. 
+
+# E. What types of plots and tables will help you to illustrate the findings to your questions? Ensure that all graph plots have axis titles, legend if necessary, scales are appropriate, appropriate geoms used, etc.).
+
+Scatter plots of the most significant variables will be helpful bu this is only a 2D graph. I don't find 3D graphs helpful so I won't be using them. I could add collor to a scatter plot to show a third variable. Creating a map that indicates the main driver of population for each county would be interesting. 
+
+# F. What do you not know how to do right now that you need to learn to answer your questions?
+
+I do not know how to create a map chart in r. This would be something I need to reserach. I also know that there are many ways to choose the best dependent varialbes. I will continue to research what ways I want to try and will execute a few of them. 
+
+# G. Do you plan on incorporating any machine learning techniques to answer your research questions? Explain.
+
+As of right now, I do not plane to execute any machine learning. I do not believe my data set is large enough to do this. 
+
+
