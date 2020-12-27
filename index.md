@@ -1,37 +1,3 @@
-## Welcome to GitHub Pages
+## Predictive Analytics: Poverty Rate
 
-You can use the [editor on GitHub](https://github.com/nestingen/Predictive-Analytics-Poverty-Rate/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/nestingen/Predictive-Analytics-Poverty-Rate/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+It is important to understand what drives poverty. When the society understands what the main drivers of poverty are, they can be a more directed approach to combat it. By understanding what factors contribute most to unemployment rate, there could be more focused help on providing assistance to struggling counties. I have combined 4 data sets together to create a master file. There is a data set for poverty, unemployment, population, and education. In my final model, I used data from poverty, unemployment, and education. I started by creating scatterplots with poverty rate in 2018 as the dependent variable versus each of the main independent variables. The independent variables I was focused on included Population Estimate in 2018, Rural Urban Continuum Code 2013, 2013 Urban Influence Code, Percent of adults with less than a high school diploma 2014-18, Percent of adults with a high school diploma only, 2014-18, Percent of adults completing some college or associate's degree, 2014-18, and Percent in Unemployment 2018. From this investigation, I found that population had little to do with unemployment rate in 2018.
