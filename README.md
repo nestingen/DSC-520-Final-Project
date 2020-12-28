@@ -1,2 +1,4 @@
 # Predictive-Analytics-Poverty-Rate
 It is important to understand what drives poverty. When the society understands what the main drivers of poverty are, they can be a more directed approach to combat it. By understanding what factors contribute most to unemployment rate, there could be more focused help on providing assistance to struggling counties. I have combined 4 data sets together to create a master file. There is a data set for poverty, unemployment, population, and education. In my final model, I used data from poverty, unemployment, and education. The main drivers of poverty that I found is unemployment and education. There could be many other drivers that were not explored in this analysis. This is an important topic to continue to investigate.
+
+**[Click to Go Back to Homepage](https://nestingen.github.io/)**
